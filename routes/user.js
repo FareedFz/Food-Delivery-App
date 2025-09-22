@@ -4,18 +4,18 @@ const User = require('../models/user');
 
 // CREATE / CHECK PHONE
 router.post('/', async (req, res) => {
-    const { phone, name, address } = req.body;
+    const { phoneNumber, firstName, lastName, address, countryCode } = req.body;
 
-    if (!phone) return res.status(400).json({ message: 'Phone number is required' });
+    if (!phoneNumber) return res.status(400).json({ message: 'Phone number is required' });
 
     try {
-        let user = await User.findOne({phone});
+        let user = await User.findOne({ phoneNumber });
         console.log(user);
-        if (user) return res.status(201).json({ exists: true, message: 'Phone number already exists', user });
+        if (user) return res.status(200).json({ exists: true, message: 'Phone number already exists', user });
 
-        user = new User({ phone, name, address });
+        user = new User({ phoneNumber, firstName, lastName, address, countryCode });
         await user.save();
-        res.json({ exists: false, message: 'User added successfully', user });
+        res.status(201).json({ exists: false, message: 'User added successfully', user });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Server error' });
